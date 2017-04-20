@@ -38,16 +38,16 @@ const actions = {
     const {text, quickreplies} = response;
 
     console.log(
-      '[PM]: ', 
+      '[PM]: ',
       JSON.stringify(response.text)
     );
   },
   getChargeData({ context, entities }) {
-    console.info('Get charge data...');
+    console.log('[i]: Get charge data...');
     let phoneNumber = firstEntityValue(entities, 'phoneNumber');
-    console.info('phoneNumber: ', phoneNumber);
+    console.log('phoneNumber: ', phoneNumber);
     let chargeAmount = firstEntityValue(entities, 'chargeAmount');
-    console.info('chargeAmount: ', chargeAmount);
+    console.log('chargeAmount: ', chargeAmount);
     
     if (phoneNumber && chargeAmount) {
       context.phoneNumber = phoneNumber;

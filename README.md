@@ -2,4 +2,4 @@
 Wit.ai phone manager chatbot
 
 - npm install
-- `node index.js <wit-access-token>`
+- `node src/index.js <wit-access-token>`
