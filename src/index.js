@@ -1,5 +1,8 @@
 'use strict';
 
+const chalk = require('chalk');
+const log = console.log;
+
 let Wit = null;
 let interactive = null;
 
@@ -14,7 +17,7 @@ try {
 
 const accessToken = (() => {
   if (process.argv.length !== 3) {
-    console.log('usage: node examples/basic.js <wit-access-token>');
+    log('usage: node examples/basic.js <wit-access-token>');
     process.exit(1);
   }
   return process.argv[2];
@@ -37,21 +40,21 @@ const actions = {
     const {sessionId, context, entities} = request;
     const {text, quickreplies} = response;
 
-    console.log(
-      '[PM]: ',
-      JSON.stringify(response.text)
-    );
+    log(chalk.magenta('[PM]'), '\t', chalk.magenta(response.text));
   },
   getChargeData({ context, entities }) {
-    console.log('[i]: Get charge data...');
+    log(chalk.blue(' [i]'), '\t', chalk.blue('Get charge data...'));
+
     let phoneNumber = firstEntityValue(entities, 'phoneNumber');
-    console.log('phoneNumber: ', phoneNumber);
+    log(chalk.gray(' [v]'), '\t', chalk.gray('phoneNumber:\t'), chalk.green(phoneNumber));
     let chargeAmount = firstEntityValue(entities, 'chargeAmount');
-    console.log('chargeAmount: ', chargeAmount);
+    log(chalk.gray(' [v]'), '\t', chalk.gray('chargeAmount:\t'), chalk.green(chargeAmount));
     
     if (phoneNumber && chargeAmount) {
       context.phoneNumber = phoneNumber;
       context.chargeAmount = chargeAmount;
+    } else {
+      context.getChargeData = true;
     }
 
     return context;
