@@ -58,6 +58,23 @@ const actions = {
     }
 
     return context;
+  },
+  getSMSData({ context, entities }) {
+    log(chalk.blue(' [i]'), '\t', chalk.blue('Get sms data...'));
+
+    let phoneNumber = firstEntityValue(entities, 'phoneNumber');
+    log(chalk.gray(' [v]'), '\t', chalk.gray('phoneNumber:\t'), chalk.green(phoneNumber));
+    let textMessage = firstEntityValue(entities, 'textMessage');
+    log(chalk.gray(' [v]'), '\t', chalk.gray('textMessage:\t'), chalk.green(textMessage));
+
+    if (phoneNumber && textMessage) {
+      context.phoneNumber = phoneNumber;
+      context.textMessage = textMessage;
+    } else {
+      log('ERROR... brak danych');
+    }
+
+    return context;
   }
 };
 
