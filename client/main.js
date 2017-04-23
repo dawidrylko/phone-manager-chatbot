@@ -1,56 +1,86 @@
-var microphone = new Wit.Microphone(document.getElementById('microphone'));
-var info = function (message) {
-  document.getElementById('info').innerHTML = message;
-};
-var error = function (message) {
-  document.getElementById('error').innerHTML = message;
-};
+'use strict';
 
-// Microphone part
-microphone.onready = function () {
-  info('Mikrofon gotowy do nagrywania');
+// Color bash
+const chalk = require('chalk');
+const log = console.log;
+
+// Create Wit variable
+let Wit = null;
+let interactive = null;
+
+try {
+  // if running from repo
+  Wit = require('../').Wit;
+  interactive = require('../').interactive;
+} catch (e) {
+  Wit = require('node-wit').Wit;
+  interactive = require('node-wit').interactive;
 }
-microphone.onaudiostart = function () {
-  info('Nagrywanie rozpoczęte');
-  error('');
-};
-microphone.onaudioend = function () {
-  info('Nagrywanie zakończone, trwa konwertowanie')
-};
-microphone.onresult = function (intent, entities) {
-  var r = kv('intent', intent);
 
-  for (var k in entities) {
-    var e = entities[k];
+const accessToken = (() => {
+  if (process.argv.length !== 3) {
+    log('token: <wit-access-token>');
+    process.exit(1);
+  }
+  return process.argv[2];
+})();
 
-    if (!(e instanceof Array)) {
-      r += kv(k, e.value);
+const firstEntityValue = (entities, entity) => {
+  const val = entities && entities[entity] &&
+    Array.isArray(entities[entity]) &&
+    entities[entity].length > 0 &&
+    entities[entity][0].value
+  ;
+  if (!val) {
+    return null;
+  }
+  return typeof val === 'object' ? val.value : val;
+};
+
+const actions = {
+  send(request, response) {
+    const {sessionId, context, entities} = request;
+    const {text, quickreplies} = response;
+
+    log(chalk.magenta('[PM]'), '\t', chalk.magenta(response.text));
+  },
+  getChargeData({ context, entities }) {
+    log(chalk.blue(' [i]'), '\t', chalk.blue('Get charge data...'));
+
+    log('entities', entities);
+    let phoneNumber = firstEntityValue(entities, 'phoneNumber');
+    log(chalk.gray(' [v]'), '\t', chalk.gray('phoneNumber:\t'), chalk.green(phoneNumber));
+    let chargeAmount = firstEntityValue(entities, 'chargeAmount');
+    log(chalk.gray(' [v]'), '\t', chalk.gray('chargeAmount:\t'), chalk.green(chargeAmount));
+    
+    if (phoneNumber && chargeAmount) {
+      context.phoneNumber = phoneNumber;
+      context.chargeAmount = chargeAmount;
     } else {
-      for (var i = 0; i < e.length; i++) {
-        r += kv(k, e[i].value);
-      }
+      context.getChargeData = true;
     }
+
+    return context;
+  },
+  getSMSData({ context, entities }) {
+    log(chalk.blue(' [i]'), '\t', chalk.blue('Get sms data...'));
+
+    let phoneNumber = firstEntityValue(entities, 'phoneNumber');
+    log(chalk.gray(' [v]'), '\t', chalk.gray('phoneNumber:\t'), chalk.green(phoneNumber));
+    let textMessage = firstEntityValue(entities, 'textMessage');
+    log(chalk.gray(' [v]'), '\t', chalk.gray('textMessage:\t'), chalk.green(textMessage));
+
+    if (phoneNumber && textMessage) {
+      context.phoneNumber = phoneNumber;
+      context.textMessage = textMessage;
+    } else {
+      log('ERROR... brak danych');
+    }
+
+    return context;
   }
-
-  document.getElementById('result').innerHTML = r;
-};
-microphone.onerror = function (errorMessage) {
-  error('Błąd:' + errorMessage);
-};
-microphone.onconnecting = function () {
-  info('Trwa weryfikowanie mikrofonu');
-};
-microphone.ondisconnected = function () {
-  info('Mikrofon nie jest podłączony');
 };
 
-// Client TOKEN from Wit.ai
-microphone.connect('R7RADAE267B7ZVLUJFAV477J2A73E3OL');
-
-// Additional
-function kv (k, v) {
-  if (toString.call(v) !== "[object String]") {
-    v = JSON.stringify(v);
-  }
-  return k + "=" + v + "\n";
-}
+// Create instance of Wit client
+const client = new Wit({ accessToken, actions });
+interactive(client);
