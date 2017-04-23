@@ -9,7 +9,7 @@ let Wit = null;
 let interactive = null;
 
 try {
-  // if running from repo
+  // Ff running from repo
   Wit = require('../').Wit;
   interactive = require('../').interactive;
 } catch (e) {
@@ -39,15 +39,15 @@ const firstEntityValue = (entities, entity) => {
 
 const actions = {
   send(request, response) {
-    const {sessionId, context, entities} = request;
-    const {text, quickreplies} = response;
+    const { sessionId, context, entities } = request;
+    const { text, quickreplies } = response;
 
     log(chalk.magenta('[PM]'), '\t', chalk.magenta(response.text));
   },
   getChargeData({ context, entities }) {
     log(chalk.blue(' [i]'), '\t', chalk.blue('Get charge data...'));
 
-    log('entities', entities);
+    // TODO show numbers
     let phoneNumber = firstEntityValue(entities, 'phoneNumber');
     log(chalk.gray(' [v]'), '\t', chalk.gray('phoneNumber:\t'), chalk.green(phoneNumber));
     let chargeAmount = firstEntityValue(entities, 'chargeAmount');
@@ -58,6 +58,9 @@ const actions = {
       context.chargeAmount = chargeAmount;
     } else {
       context.getChargeData = true;
+
+      delete context.phoneNumber;
+      delete context.chargeAmount;
     }
 
     return context;
@@ -65,6 +68,7 @@ const actions = {
   getSMSData({ context, entities }) {
     log(chalk.blue(' [i]'), '\t', chalk.blue('Get sms data...'));
 
+    // TODO show numbers
     let phoneNumber = firstEntityValue(entities, 'phoneNumber');
     log(chalk.gray(' [v]'), '\t', chalk.gray('phoneNumber:\t'), chalk.green(phoneNumber));
     let textMessage = firstEntityValue(entities, 'textMessage');
@@ -74,7 +78,10 @@ const actions = {
       context.phoneNumber = phoneNumber;
       context.textMessage = textMessage;
     } else {
-      log('ERROR... brak danych');
+      context.getSMSData = true;
+
+      delete context.phoneNumber;
+      delete context.textMessage;
     }
 
     return context;
