@@ -45,6 +45,7 @@ const actions = {
   getChargeData({ context, entities }) {
     log(chalk.blue(' [i]'), '\t', chalk.blue('Get charge data...'));
 
+    log('entities', entities);
     let phoneNumber = firstEntityValue(entities, 'phoneNumber');
     log(chalk.gray(' [v]'), '\t', chalk.gray('phoneNumber:\t'), chalk.green(phoneNumber));
     let chargeAmount = firstEntityValue(entities, 'chargeAmount');
