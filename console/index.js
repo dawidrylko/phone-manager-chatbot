@@ -17,7 +17,7 @@ try {
 
 const accessToken = (() => {
   if (process.argv.length !== 3) {
-    log('usage: node examples/basic.js <wit-access-token>');
+    log('token: <wit-access-token>');
     process.exit(1);
   }
   return process.argv[2];
