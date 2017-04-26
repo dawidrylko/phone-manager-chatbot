@@ -1,6 +1,8 @@
 # Phone Manager Chatbot
-Wit.ai phone manager chatbot
+Simple phone manager chatbot created with [Wit.ai](https://wit.ai/).
 
+## Demo
+[Phone Manager Chatbot](https://phone-manager-chatbot.herokuapp.com/) available only in Polish.
 
 ## Install
 - `npm install`
