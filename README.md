@@ -1,4 +1,5 @@
 # Phone Manager Chatbot
+
 Simple phone manager chatbot created with [Wit.ai](https://wit.ai/).
 
 ## Demo
@@ -15,3 +16,7 @@ Tested on npm >= 6.10.
 ## Running web api
 - Install any node server, eq. `http-server`.
 - Run `http-server web`.
+
+***
+
+Created by [Dawid Ryłko](https://www.linkedin.com/in/dawidrylko/). Check out my [programming blog](https://www.dawidrylko.com/).
