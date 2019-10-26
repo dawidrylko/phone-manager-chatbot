@@ -5,15 +5,15 @@ const chalk = require('chalk');
 const log = console.log;
 
 // Create Wit variable
-let Wit = null;
+let wit = null;
 let interactive = null;
 
 try {
   // Ff running from repo
-  Wit = require('../').Wit;
+  wit = require('../').Wit;
   interactive = require('../').interactive;
 } catch (e) {
-  Wit = require('node-wit').Wit;
+  wit = require('node-wit').Wit;
   interactive = require('node-wit').interactive;
 }
 
@@ -26,11 +26,12 @@ const accessToken = (() => {
 })();
 
 const firstEntityValue = (entities, entity) => {
-  const val = entities && entities[entity] &&
+  const val =
+    entities &&
+    entities[entity] &&
     Array.isArray(entities[entity]) &&
     entities[entity].length > 0 &&
-    entities[entity][0].value
-  ;
+    entities[entity][0].value;
   if (!val) {
     return null;
   }
@@ -49,10 +50,20 @@ const actions = {
 
     // TODO show numbers
     let phoneNumber = firstEntityValue(entities, 'phoneNumber');
-    log(chalk.gray(' [v]'), '\t', chalk.gray('phoneNumber:\t'), chalk.green(phoneNumber));
+    log(
+      chalk.gray(' [v]'),
+      '\t',
+      chalk.gray('phoneNumber:\t'),
+      chalk.green(phoneNumber)
+    );
     let chargeAmount = firstEntityValue(entities, 'chargeAmount');
-    log(chalk.gray(' [v]'), '\t', chalk.gray('chargeAmount:\t'), chalk.green(chargeAmount));
-    
+    log(
+      chalk.gray(' [v]'),
+      '\t',
+      chalk.gray('chargeAmount:\t'),
+      chalk.green(chargeAmount)
+    );
+
     if (phoneNumber && chargeAmount) {
       context.phoneNumber = phoneNumber;
       context.chargeAmount = chargeAmount;
@@ -70,9 +81,19 @@ const actions = {
 
     // TODO show numbers
     let phoneNumber = firstEntityValue(entities, 'phoneNumber');
-    log(chalk.gray(' [v]'), '\t', chalk.gray('phoneNumber:\t'), chalk.green(phoneNumber));
+    log(
+      chalk.gray(' [v]'),
+      '\t',
+      chalk.gray('phoneNumber:\t'),
+      chalk.green(phoneNumber)
+    );
     let textMessage = firstEntityValue(entities, 'textMessage');
-    log(chalk.gray(' [v]'), '\t', chalk.gray('textMessage:\t'), chalk.green(textMessage));
+    log(
+      chalk.gray(' [v]'),
+      '\t',
+      chalk.gray('textMessage:\t'),
+      chalk.green(textMessage)
+    );
 
     if (phoneNumber && textMessage) {
       context.phoneNumber = phoneNumber;
@@ -89,5 +110,5 @@ const actions = {
 };
 
 // Create instance of Wit client
-const client = new Wit({ accessToken, actions });
+const client = new wit({ accessToken, actions });
 interactive(client);
